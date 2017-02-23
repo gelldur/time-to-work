@@ -9,9 +9,18 @@ FIND_PACKAGE(Qt5 REQUIRED COMPONENTS Core Quick)
 # Instruct CMake to run moc automatically when needed.
 SET(CMAKE_AUTOMOC ON)
 
-#QT5_ADD_RESOURCES(RESOURCES res/qml.qrc)
+QT5_ADD_RESOURCES(RESOURCES res/qml.qrc)
+
+LIST(APPEND QML_DIRS ${PROJECT_SOURCE_DIR}/res/view)
+SET(QML_IMPORT_PATH "${QML_DIRS}" CACHE STRING "Qt Creator extra qml import paths" FORCE)
+
+SET(QML_SRC
+		res/view/main.qml
+		res/view/component/Space.qml
+		)
 
 SET(SOURCE_FILES
+		src/AppController.cpp src/AppController.h
 		src/plugin/redmine/api/data/Error.h
 		src/plugin/redmine/api/data/Issue.h
 		src/plugin/redmine/api/data/Project.h
@@ -24,6 +33,9 @@ SET(SOURCE_FILES
 		)
 
 ADD_EXECUTABLE(TimeToWork main.cpp ${SOURCE_FILES} ${RESOURCES})
+
+# Add QML files to project tree without building/compiling them
+ADD_CUSTOM_TARGET(myApp SOURCES ${QML_SRC})
 
 TARGET_COMPILE_OPTIONS(TimeToWork PRIVATE
 		-Wall -pedantic -Werror
