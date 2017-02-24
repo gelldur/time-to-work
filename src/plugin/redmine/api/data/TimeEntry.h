@@ -3,11 +3,16 @@
 //
 #pragma once
 
+#include <chrono>
 #include <string>
 
 struct TimeEntry
 {
-	TimeEntry(int issueId, int activityId, float time, const std::string& comment)
+	TimeEntry()
+	{
+	}
+
+	TimeEntry(int issueId, int activityId, std::chrono::minutes time, const std::string& comment)
 			: issueId(issueId)
 			, activityId(activityId)
 			, time(time)
@@ -15,10 +20,29 @@ struct TimeEntry
 	{
 	}
 
-	int issueId;
-	int activityId;
-	float time;
+	int issueId = 0;
+	int activityId = 0;
+	std::chrono::minutes time;
 	std::string comment;
+
+	float getHours() const
+	{
+		return time.count() / 60.F;
+	}
+
+	bool isValid() const
+	{
+		return issueId > 0 && activityId > 0 && getHours() > 0;
+	}
+
+	std::string getComment() const
+	{
+		if (comment.length() > 255)
+		{
+			return comment.substr(0, 252) + "...";
+		}
+		return comment;
+	}
 };
 
 

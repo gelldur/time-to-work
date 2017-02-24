@@ -7,6 +7,9 @@
 
 #include <QObject>
 #include <QtQuick/QQuickView>
+#include <QtConcurrent>
+
+#include <plugin/redmine/RedmineApi.h>
 
 class AppController : public QObject
 {
@@ -18,11 +21,27 @@ public:
 
 	Q_INVOKABLE QString getTimeWorking() const;
 
-	Q_INVOKABLE void onStartWorking();
-	Q_INVOKABLE void onStopWorking();
+signals:
+	void activitiesDownloaded(QVariantList activitesLabels);
+	void timeLoged(int status, QString message);
+	void errorMessage(QString message);
+
+public slots:
+	void onStartWorking();
+	void onStopWorking(QVariantMap viewData);
+
+private slots:
+	void onActivitiesDownloaded();
+	void onTimeLogDone();
 
 private:
 	std::chrono::system_clock::time_point _startWork;
+	std::vector<WorkActivity> _workActivities;
+
+	RedmineApi _redmineApi;
+
+	QFutureWatcher<std::vector<WorkActivity>> _watcherActivities;
+	QFutureWatcher<bool> _watcherTimeLog;
 
 	std::string formatWorkingTime() const;
 };

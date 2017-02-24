@@ -11,6 +11,9 @@
 #include <plugin/redmine/api/data/WorkActivity.h>
 #include <plugin/redmine/api/data/TimeEntry.h>
 
+/**
+ * REST API docs available at: http://www.redmine.org/projects/redmine/wiki/Rest_api
+ */
 class RedmineApi
 {
 public:

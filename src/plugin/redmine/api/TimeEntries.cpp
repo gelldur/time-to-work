@@ -27,8 +27,8 @@ void TimeEntries::logTimeBody(std::ostream& body, const TimeEntry& timeEntry)
 	Poco::JSON::Object timeEntryJson;
 	timeEntryJson.set("issue_id", timeEntry.issueId);
 	timeEntryJson.set("activity_id", timeEntry.activityId);
-	timeEntryJson.set("hours", timeEntry.time);
-	timeEntryJson.set("comments", timeEntry.comment);
+	timeEntryJson.set("hours", timeEntry.getHours());
+	timeEntryJson.set("comments", timeEntry.getComment());
 
 	Poco::JSON::Object logTime;
 	logTime.set("time_entry", timeEntryJson);

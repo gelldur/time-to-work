@@ -4,7 +4,7 @@ PROJECT(TimeToWork)
 SET(CMAKE_CXX_STANDARD 14)
 
 
-FIND_PACKAGE(Qt5 REQUIRED COMPONENTS Core Quick)
+FIND_PACKAGE(Qt5 REQUIRED COMPONENTS Core Quick Concurrent)
 
 # Instruct CMake to run moc automatically when needed.
 SET(CMAKE_AUTOMOC ON)
@@ -47,7 +47,7 @@ TARGET_INCLUDE_DIRECTORIES(TimeToWork PRIVATE
 		./
 		)
 
-TARGET_LINK_LIBRARIES(TimeToWork Qt5::Core Qt5::Quick)
+TARGET_LINK_LIBRARIES(TimeToWork Qt5::Core Qt5::Quick Qt5::Concurrent)
 
 SET(POCO_STATIC ON CACHE BOOL "" FORCE)
 

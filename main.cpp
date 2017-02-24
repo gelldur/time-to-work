@@ -26,10 +26,3 @@ int main(int argc, char* argv[])
 
 	return app.exec();
 }
-
-int mainTest()
-{
-	std::cout << "Hello, World!" << std::endl;
-
-	return 0;
-}

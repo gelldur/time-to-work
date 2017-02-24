@@ -1,11 +1,11 @@
 import QtQuick 2.6
 import QtQuick.Window 2.2
 import QtQuick.Controls 2.1
+import QtQuick.Dialogs 1.2
 
 import QtQml 2.0
 
 import com.AppController 1.0
-
 import "component" as MyComponent
 
 ApplicationWindow {
@@ -18,7 +18,6 @@ ApplicationWindow {
     AppController {
         id: appController
     }
-
     MouseArea {
         anchors.fill: parent
         onClicked: {
@@ -38,13 +37,33 @@ ApplicationWindow {
         }
     }
 
+    MessageDialog {
+        id: statusDialog
+        modality: Qt.ApplicationModal
+        title: "Logging time"
+        text: "Logging time"
+        standardButtons: StandardButton.Ok
+        visible: false
+    }
+
     Column {
         anchors.fill: parent
-
+        MyComponent.Space {
+            height: 50
+        }
         Button {
             id: buttonStartStop
             text: qsTr("Start")
             anchors.horizontalCenter: parent.horizontalCenter
+
+            function onStopWorking() {
+                appController.onStopWorking({
+                                                issue: issue.text,
+                                                activity: activity.currentIndex,
+                                                comment: comment.text
+                                            })
+                statusDialog.visible = true
+            }
 
             onClicked: {
                 console.log(qsTr('Clicked'))
@@ -57,7 +76,7 @@ ApplicationWindow {
                     setTitle(qsTr("Working..."))
                 } else {
                     updateTimeLabel.stop()
-                    appController.onStopWorking()
+                    onStopWorking()
 
                     text = qsTr("Start")
                     setTitle(qsTr("TimeToWork"))
@@ -93,6 +112,37 @@ ApplicationWindow {
 
             verticalAlignment: Text.AlignVCenter
             anchors.horizontalCenter: parent.horizontalCenter
+        }
+        MyComponent.Space {
+            height: 10
+        }
+        ComboBox {
+            id: activity
+            anchors.horizontalCenter: parent.horizontalCenter
+            displayText: "Loading..."
+
+            onCurrentIndexChanged: {
+                displayText = model[currentIndex]
+            }
+
+            model: ListModel {
+                id: activityModel
+            }
+
+            Connections {
+                target: appController
+                onActivitiesDownloaded: {
+                    console.log("Received in QML from C++: " + activitesLabels.length)
+                    activityModel.clear()
+                    activity.displayText = "Pick activity"
+                    for (var element in activitesLabels) {
+                        console.log("Append - " + activitesLabels[element])
+                        activityModel.append({
+                                                 text: activitesLabels[element]
+                                             })
+                    }
+                }
+            }
         }
     }
 }
